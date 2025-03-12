@@ -216,11 +216,6 @@ public class AppController implements ISessionObserver, Listener, IDatabaseObser
         mWatchableDirectory.addObserver(mEntityManager);
     }
 
-    public void show() {
-        // ... setVisible?
-    }
-
-
     /**
      * Charge le répertoire d'échange depuis le fichier de configuration.
      * Le fichier est recherché d'abord dans le répertoire courant, puis dans
@@ -231,8 +226,8 @@ public class AppController implements ISessionObserver, Listener, IDatabaseObser
 
         // Liste des chemins où chercher le fichier de configuration
         String[] configPaths = {
-                "./configuration.properties",                                      // Répertoire courant
-                System.getProperty("user.home") + "/appconfig/configuration.properties" // Répertoire utilisateur
+                "./configuration.properties",
+                System.getProperty("user.home") + "/appconfig/configuration.properties"
         };
 
         for (String path : configPaths) {

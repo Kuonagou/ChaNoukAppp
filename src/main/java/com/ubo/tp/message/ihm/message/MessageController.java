@@ -54,15 +54,11 @@ public class MessageController {
      * @return true si l'envoi est réussi, false sinon
      */
     public void sendMessage(String messageText) {
-        // Vérifier si un utilisateur est connecté
         User connectedUser = mSession.getConnectedUser();
         if (connectedUser != null) {
-            // Vérifier la longueur du message
             if (messageText != null || !messageText.trim().isEmpty() || messageText.length() <= MAX_MESSAGE_LENGTH) {
-                // Créer le message
                 Message newMessage = new Message(connectedUser, messageText);
 
-                // Sauvegarder le message dans un fichier
                 mEntityManager.writeMessageFile(newMessage);
             }
         }
@@ -82,17 +78,13 @@ public class MessageController {
         Set<Message> result = new HashSet<>();
         String query = searchQuery.trim();
 
-        // Recherche par tag utilisateur (@)
         if (query.contains("@")) {
             String[] parts = query.split("@");
             if (parts.length > 1) {
-                // Extraire le tag utilisateur (prendre le premier mot après @)
                 String userTag = parts[1].split(" ")[0];
 
-                // Chercher les messages avec ce tag utilisateur
                 result.addAll(mDatabase.getMessagesWithUserTag(userTag));
 
-                // Chercher également les messages émis par cet utilisateur
                 for (User user : mDatabase.getUsers()) {
                     if (user.getUserTag().equals(userTag)) {
                         result.addAll(mDatabase.getUserMessages(user));
@@ -101,20 +93,15 @@ public class MessageController {
                 }
             }
         }
-        // Recherche par hashtag (#)
         else if (query.contains("#")) {
             String[] parts = query.split("#");
             if (parts.length > 1) {
-                // Extraire le hashtag (prendre le premier mot après #)
                 String tag = parts[1].split(" ")[0];
 
-                // Chercher les messages avec ce hashtag
                 result.addAll(mDatabase.getMessagesWithTag(tag));
             }
         }
-        // Recherche générale (union des deux critères précédents)
         else {
-            // Recherche par utilisateur
             for (User user : mDatabase.getUsers()) {
                 if (user.getName().toLowerCase().contains(query.toLowerCase()) ||
                         user.getUserTag().toLowerCase().contains(query.toLowerCase())) {
@@ -123,7 +110,6 @@ public class MessageController {
                 }
             }
 
-            // Recherche par contenu du message
             for (Message message : mDatabase.getMessages()) {
                 if (message.getText().toLowerCase().contains(query.toLowerCase())) {
                     result.add(message);
