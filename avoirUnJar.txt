@@ -1,0 +1,7 @@
+PS C:\Users\utilisateur\Documents\Fac\M2\IHM Lucas\Jour 1>
+gradle clean build
+
+PS C:\Users\utilisateur\Documents\Fac\M2\IHM Lucas\Jour 1>
+cd .\build\libs\
+PS C:\Users\utilisateur\Documents\Fac\M2\IHM Lucas\Jour 1\build\libs>
+java -jar ChaNoukApp-1.0.0.jar
