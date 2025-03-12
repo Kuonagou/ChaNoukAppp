@@ -18,12 +18,10 @@ public class LoginController implements LoginListener {
 
     @Override
     public void doLogin(String tag, String password) {
-        boolean isValidConnexion = false;
         for (User user : this.mDatabase.getUsers()) {
             String userTag = user.getUserTag();
             String userPassword = user.getUserPassword();
             if(userTag.equals(tag) && userPassword.equals(password)) {
-                isValidConnexion = true;
                 this.mSession.connect(user);
                 break;
             }

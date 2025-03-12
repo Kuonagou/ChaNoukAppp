@@ -90,7 +90,6 @@ public class UserModel implements IUserModel {
     public void makeNewSearch(List<User> usersSearched) {
         this.searchUsers = usersSearched;
 
-        // Notifier tous les observateurs
         for(IUserSearchObserver observer : usersSearchObservers) {
             observer.notifyNewUserSearch(this.searchUsers);
         }
@@ -100,7 +99,6 @@ public class UserModel implements IUserModel {
     public void listUserChanged(List<User> newUsersList) {
         this.allUsers = newUsersList;
 
-        // Notifier tous les observateurs
         for(IUserObserver observer : usersObservers) {
             observer.notifyUserListChanged(this.allUsers);
         }
@@ -108,11 +106,8 @@ public class UserModel implements IUserModel {
 
     @Override
     public void updateUserDisplayInfo(User user, DisplayableUserInfo displayInfo) {
-        // Stocker les informations d'affichage
         this.displayInfoMap.put(user, displayInfo);
 
-        // Notifier les observateurs que les informations d'affichage ont été mises à jour
-        // en transmettant directement les informations d'affichage
         for (IUserDisplayObserver observer : userDisplayObservers) {
             observer.notifyUserDisplayUpdated(user, displayInfo);
         }

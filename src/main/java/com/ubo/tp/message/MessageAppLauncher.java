@@ -17,7 +17,7 @@ public class MessageAppLauncher {
 	/**
 	 * Indique si le mode bouchoné est activé.
 	 */
-	protected static boolean IS_MOCK_ENABLED = true;
+	protected static boolean IS_MOCK_ENABLED = false;
 
 	/**
 	 * Launcher.
@@ -36,6 +36,5 @@ public class MessageAppLauncher {
 
 		AppController messageApp = new AppController(database, entityManager);
 		messageApp.init();
-		messageApp.show();
 	}
 }

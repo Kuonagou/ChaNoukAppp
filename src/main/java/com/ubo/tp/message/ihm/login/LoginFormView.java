@@ -1,5 +1,7 @@
 package com.ubo.tp.message.ihm.login;
 
+import com.ubo.tp.message.common.PropertiesManager;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,7 +18,7 @@ public class LoginFormView extends JPanel {
     }
 
     public void init(){
-        this.setBorder(BorderFactory.createTitledBorder("Connexion"));
+        this.setBorder(BorderFactory.createTitledBorder(PropertiesManager.getString("CONNEXION")));
         this.setBackground(Color.PINK);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -26,7 +28,7 @@ public class LoginFormView extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
-        this.add(new JLabel("Tag :"), gbc);
+        this.add(new JLabel(PropertiesManager.getString("TAG")), gbc);
 
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -39,7 +41,7 @@ public class LoginFormView extends JPanel {
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0;
-        this.add(new JLabel("Mot de passe :"), gbc);
+        this.add(new JLabel(PropertiesManager.getString("MDP")), gbc);
 
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -52,7 +54,7 @@ public class LoginFormView extends JPanel {
         gbc.gridy = 2;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        JButton loginButton = new JButton("Se connecter");
+        JButton loginButton = new JButton(PropertiesManager.getString("SE_CONNECTER"));
         this.add(loginButton, new GridBagConstraints());
 
         // Action du bouton Se connecter
