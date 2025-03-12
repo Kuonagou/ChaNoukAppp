@@ -1,6 +1,7 @@
 plugins {
     java
     application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.ubo.tp.message"
@@ -19,7 +20,7 @@ dependencies {
     // Core Java libraries
     implementation("com.google.guava:guava:32.1.2-jre")
 
-    // Swing UI dependencies (if needed)
+    // Swing UI dependencies
     implementation("com.formdev:flatlaf:3.2.1")
 
     // Logging
@@ -41,16 +42,39 @@ tasks.jar {
             "Main-Class" to "com.ubo.tp.message.MessageAppLauncher"
         )
     }
-
-    // Create a fat jar with all dependencies
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+// Configuration des ressources
+sourceSets {
+    main {
+        resources {
+            srcDir("src/main/resources")
+            srcDir("src/main/java")  // Pour inclure les fichiers de ressources dans les packages Java
+        }
+    }
+}
+
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+// Configuration des tests
 tasks.test {
     useJUnitPlatform()
 }
 
+// Configuration de la compilation Java
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+}
+
+// Configuration du Shadow JAR pour créer un JAR avec toutes les dépendances
+tasks.shadowJar {
+    archiveClassifier.set("") // Remplace le JAR standard
+    archiveVersion.set("") // Pas de version dans le nom du fichier
+    manifest {
+        attributes(
+            "Main-Class" to "com.ubo.tp.message.MessageAppLauncher"
+        )
+    }
 }
