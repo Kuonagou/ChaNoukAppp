@@ -47,7 +47,7 @@ public class PropertiesManager {
 		}
 	}
 
-	private static final String PROPERTIES_FILE_PATH = "C:\\Users\\utilisateur\\Documents\\Fac\\M2\\IHM Lucas\\Jour 1\\src\\main\\resources\\strings.properties";
+	private static final String PROPERTIES_FILE_PATH = "./src/main/resources/strings.properties";
 	private static final Map<String, String> propertiesMap = new HashMap<>();
 	static {
 		loadPropertiesString();
