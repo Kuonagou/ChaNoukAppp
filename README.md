@@ -35,17 +35,3 @@ ChanoukApp est une application de messagerie basée sur un système de surveilla
    ```
 2. Importer le projet dans votre IDE préféré
 3. Compiler le projet
-
-### Exécution
-1. Exécuter la classe principale `[NOM_DE_LA_CLASSE_PRINCIPALE]`
-2. [Autres instructions spécifiques à l'exécution]
-
-## Utilisation
-[Instructions d'utilisation de l'application]
-
-## Documentation
-Pour plus d'informations sur l'implémentation, veuillez consulter la documentation du code source.
-
----
-
-© 2025 Charlotte Menou - ChanoukApp
