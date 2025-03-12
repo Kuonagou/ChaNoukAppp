@@ -86,7 +86,7 @@ public class InscriptionView extends JPanel {
         this.add(addUserButton, gbc);
 
         addUserButton.addActionListener(e -> {
-            this.addUser(nomTextField.getText(), String.valueOf(passwordField), tagField.getText(), avatarPathField.getText());
+            this.addUser(nomTextField.getText(), passwordField.getText(), tagField.getText(), avatarPathField.getText());
         });
 
         // Create scroll pane for user list
