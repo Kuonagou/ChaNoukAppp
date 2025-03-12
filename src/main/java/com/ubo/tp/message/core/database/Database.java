@@ -226,7 +226,7 @@ public class Database implements IDatabase {
 
 		// Notification pour le nouvel observateur
 		for (Message message : this.getMessages()) {
-			//observer.notifyMessageAdded(message);
+			observer.notifyMessageAdded(message);
 			//TODO
 		}
 

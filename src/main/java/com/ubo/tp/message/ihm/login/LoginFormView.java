@@ -1,83 +1,111 @@
 package com.ubo.tp.message.ihm.login;
 
 import com.ubo.tp.message.common.PropertiesManager;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class LoginFormView extends JPanel {
-   private final LoginController loginController;
+    private final LoginController loginController;
+    private JFXPanel jfxPanel;
+
+    // Composants JavaFX
+    private TextField tagField;
+    private PasswordField passwordField;
 
     public LoginFormView(LoginController loginController) {
         this.loginController = loginController;
-        this.init();
+
+        // Initialiser le panel Swing qui contiendra le contenu JavaFX
+        this.setLayout(new BorderLayout());
+        jfxPanel = new JFXPanel();
+        this.add(jfxPanel, BorderLayout.CENTER);
+
+        // Initialiser l'interface JavaFX
+        Platform.runLater(this::init);
     }
 
     public void doLogin(String tag, String password) {
         this.loginController.doLogin(tag, password);
     }
 
-    public void init(){
-        this.setBorder(BorderFactory.createTitledBorder(PropertiesManager.getString("CONNEXION")));
-        this.setBackground(Color.PINK);
+    public void init() {
+        // Conteneur principal
+        BorderPane root = new BorderPane();
+        root.setStyle("-fx-background-color: #FFC0CB;"); // Équivalent à Color.PINK
+        root.setPadding(new Insets(20));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        // Titre
+        Text title = new Text(PropertiesManager.getString("CONNEXION"));
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+
+        HBox titleBox = new HBox(title);
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.setPadding(new Insets(0, 0, 20, 0));
+        root.setTop(titleBox);
+
+        // Formulaire de connexion
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 0, 20, 0));
+        grid.setAlignment(Pos.CENTER);
 
         // Champ Tag
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(new JLabel(PropertiesManager.getString("TAG")), gbc);
+        Label tagLabel = new Label(PropertiesManager.getString("TAG"));
+        grid.add(tagLabel, 0, 0);
 
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        JTextField connexionTagField = new JTextField(20);
-        this.add(connexionTagField, gbc);
+        tagField = new TextField();
+        tagField.setPromptText(PropertiesManager.getString("TAG"));
+        tagField.setPrefColumnCount(20);
+        grid.add(tagField, 1, 0);
 
         // Champ Mot de passe
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
-        this.add(new JLabel(PropertiesManager.getString("MDP")), gbc);
+        Label passwordLabel = new Label(PropertiesManager.getString("MDP"));
+        grid.add(passwordLabel, 0, 1);
 
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        JPasswordField connexionPasswordField = new JPasswordField(20);
-        this.add(connexionPasswordField, gbc);
+        passwordField = new PasswordField();
+        passwordField.setPromptText(PropertiesManager.getString("MDP"));
+        passwordField.setPrefColumnCount(20);
+        grid.add(passwordField, 1, 1);
 
-        // Bouton Se connecter
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        JButton loginButton = new JButton(PropertiesManager.getString("SE_CONNECTER"));
-        this.add(loginButton, new GridBagConstraints());
+        // Bouton de connexion
+        Button loginButton = new Button(PropertiesManager.getString("SE_CONNECTER"));
+        HBox buttonBox = new HBox(loginButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        grid.add(buttonBox, 0, 2, 2, 1);
 
-        // Action du bouton Se connecter
-        loginButton.addActionListener(e -> {
-            String tag = connexionTagField.getText();
-            String password = new String(connexionPasswordField.getPassword());
-            this.doLogin(tag, password);
+        // Ajouter le formulaire au conteneur principal
+        root.setCenter(grid);
+
+        // Action du bouton de connexion
+        loginButton.setOnAction(e -> {
+            String tag = tagField.getText();
+            String password = passwordField.getText();
+
+            // Utiliser SwingUtilities pour interagir avec le code Swing
+            SwingUtilities.invokeLater(() -> {
+                doLogin(tag, password);
+            });
         });
 
-        // Ajouter le panel du formulaire de connexion à la fenêtre principale
-        GridBagConstraints gbc3 = new GridBagConstraints();
-        gbc3.gridx = 0;
-        gbc3.gridy = 3; // Placé sous le formulaire d'ajout d'utilisateur
-        gbc3.weightx = 1.0;
-        gbc3.fill = GridBagConstraints.HORIZONTAL;
-        gbc3.insets = new Insets(10, 10, 10, 10);
-
-
-        // Create scroll pane for user list
-        JScrollPane loginPanel = new JScrollPane(this);
-        loginPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        loginPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
+        // Créer et attacher la scène
+        Scene scene = new Scene(root, 400, 300);
+        jfxPanel.setScene(scene);
     }
-
 }

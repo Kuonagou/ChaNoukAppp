@@ -1,7 +1,7 @@
 plugins {
     java
     application
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("org.openjfx.javafxplugin") version "0.0.13"
 }
 
 group = "com.ubo.tp.message"
@@ -17,64 +17,80 @@ repositories {
 }
 
 dependencies {
-    // Core Java libraries
+    implementation("org.openjfx:javafx-controls:21.0.1")
+    implementation("org.openjfx:javafx-fxml:21.0.1")
+    implementation("org.openjfx:javafx-swing:21.0.1")
+
+    // Autres dépendances de votre projet
     implementation("com.google.guava:guava:32.1.2-jre")
+}
 
-    // Swing UI dependencies
-    implementation("com.formdev:flatlaf:3.2.1")
-
-    // Logging
-    implementation("org.slf4j:slf4j-api:2.0.9")
-    implementation("ch.qos.logback:logback-classic:1.4.11")
-
-    // Testing dependencies
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+javafx {
+    version = "21.0.1"
+    modules = listOf("javafx.controls", "javafx.fxml", "javafx.swing")
 }
 
 application {
     mainClass.set("com.ubo.tp.message.MessageAppLauncher")
 }
 
+// Configuration pour activer/désactiver le mode mock
+val isMockEnabled = project.findProperty("mockMode")?.toString()?.toBoolean() ?: false
+
+tasks.named<JavaExec>("run") {
+    // Passer le mode mock comme propriété système
+    systemProperty("mock.mode", isMockEnabled)
+}
+
 tasks.jar {
     manifest {
-        attributes(
-            "Main-Class" to "com.ubo.tp.message.MessageAppLauncher"
-        )
+        attributes(mapOf(
+            "Main-Class" to "com.ubo.tp.message.MessageAppLauncher",
+            "Class-Path" to configurations.runtimeClasspath.get().files.map { it.name }.joinToString(" ")
+        ))
     }
+
+    // Inclure toutes les dépendances dans le jar
+    from(configurations.runtimeClasspath.get().map {
+        if (it.isDirectory) it else zipTree(it)
+    })
+
+    // Inclure explicitement les sources et ressources
+    from(sourceSets.main.get().output)
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-// Configuration des ressources
-sourceSets {
-    main {
-        resources {
-            srcDir("src/main/resources")
-            srcDir("src/main/java")  // Pour inclure les fichiers de ressources dans les packages Java
-        }
-    }
-}
+// Tâche pour créer un fat JAR avec toutes les dépendances
+tasks.register<Jar>("fatJar") {
+    archiveBaseName.set(project.name + "-all")
 
-tasks.processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
-
-// Configuration des tests
-tasks.test {
-    useJUnitPlatform()
-}
-
-// Configuration de la compilation Java
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
-
-// Configuration du Shadow JAR pour créer un JAR avec toutes les dépendances
-tasks.shadowJar {
-    archiveClassifier.set("") // Remplace le JAR standard
-    archiveVersion.set("") // Pas de version dans le nom du fichier
     manifest {
-        attributes(
-            "Main-Class" to "com.ubo.tp.message.MessageAppLauncher"
-        )
+        attributes["Main-Class"] = "com.ubo.tp.message.MessageAppLauncher"
     }
+
+    // Inclure toutes les dépendances
+    from(sourceSets.main.get().output)
+    from({
+        configurations.runtimeClasspath.get().map {
+            if (it.isDirectory) it else zipTree(it)
+        }
+    })
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Ajouter le fatJar à la construction
+tasks.build {
+    dependsOn(tasks.named("fatJar"))
+}
+
+// Exclure les fichiers de signature pour éviter les conflits
+tasks.withType<Jar> {
+    exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
+}
+
+// Configuration du wrapper Gradle
+tasks.wrapper {
+    gradleVersion = "8.5"
 }
